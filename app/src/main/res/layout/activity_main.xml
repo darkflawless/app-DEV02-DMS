@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0B1218"
+    tools:context=".MainActivity">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.example.dms_appdetect.FaceOverlayView
+        android:id="@+id/faceOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <View
+        android:id="@+id/warmBorder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/warm_border"
+        android:visibility="gone" />
+
+    <!-- TOP BAR: Risk Score & Monitoring Status -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="#D9101B25"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingTop="32dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="DMS  /  DRIVER MONITOR"
+                android:textColor="#80E5D2"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvSafetyScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="An toàn: 100 • Hạng A"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Dynamic Realtime Risk Banner -->
+        <LinearLayout
+            android:id="@+id/layoutRiskBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="#2E7D32"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="4dp">
+
+            <TextView
+                android:id="@+id/tvRiskZone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🟢 VÙNG XANH • R(t) = 0.0 / 100"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvContextMultiplier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="K = 1.00x"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Sẵn sàng"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/detailText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Bắt đầu để cấp quyền camera và hiệu chuẩn"
+            android:textColor="#D2DEE2"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- BOTTOM CONTROL CONTAINER (With Hide/Show full-face toggle) -->
+    <LinearLayout
+        android:id="@+id/bottomContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <!-- MINIMIZER / EXPANDER ARROW HEADER -->
+        <LinearLayout
+            android:id="@+id/btnToggleBottomPanel"
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:background="#E6101B25"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvToggleBottomText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="▼ Ẩn bảng điều khiển (Xem full mặt)"
+                android:textColor="#80E5D2"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- SCROLLABLE BOTTOM PANEL -->
+        <ScrollView
+            android:id="@+id/bottomScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="270dp"
+            android:background="#F2101B25"
+            android:fillViewport="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    android:id="@+id/metricsText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:text="EAR --  |  MAR --\nPITCH --  YAW --  ROLL --"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/qualityText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Dữ liệu: chưa có"
+                    android:textColor="#A6C6C8"
+                    android:textSize="11sp" />
+
+                <!-- Main Action Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/startButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/start_monitoring" />
+
+                    <Button
+                        android:id="@+id/calibrateButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:enabled="false"
+                        android:text="@string/recalibrate" />
+
+                    <Button
+                        android:id="@+id/muteButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:text="@string/mute" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/sunglassesButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/sunglasses_off" />
+
+                    <Button
+                        android:id="@+id/lightButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:text="@string/light_off" />
+
+                    <Button
+                        android:id="@+id/eyeTestButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:text="@string/eye_test" />
+                </LinearLayout>
+
+                <!-- ============================================== -->
+                <!-- TESTER TUNING MODULE (Sliders & Presets)       -->
+                <!-- ============================================== -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="#37474F" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🛠️ BẢNG ĐIỀU KHIỂN CHO TESTER (TUNING)"
+                    android:textColor="#FFD54F"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <!-- 1-Minute Test Mode -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnOneMinuteTest"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:backgroundTint="#FF6F00"
+                        android:text="⏱️ Bắt đầu Test 1 Phút"
+                        android:textColor="#FFFFFF" />
+
+                    <TextView
+                        android:id="@+id/tvTestCountdown"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="--:--"
+                        android:textColor="#FFD54F"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Overlay & Fast Decay Toggles -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchOverlay"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="Vẽ lưới mặt"
+                        android:textColor="#B0BEC5"
+                        android:textSize="11sp" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchFastDecay"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Tua nhanh hạ nhiệt"
+                        android:textColor="#B0BEC5"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <!-- Speed Factor Presets -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Vận tốc (K=0.25x - 1.6x):"
+                    android:textColor="#B0BEC5"
+                    android:textSize="11sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnSpeedJam"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="0dp"
+                        android:text="Kẹt xe"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/btnSpeedUrban"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="0dp"
+                        android:text="Đô thị"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/btnSpeedOpen"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="0dp"
+                        android:text="Đ.Trường"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/btnSpeedHighway"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="0dp"
+                        android:text="Cao tốc"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <!-- Time of Day Presets -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Khung giờ sinh học (K=1.0x - 1.35x):"
+                    android:textColor="#B0BEC5"
+                    android:textSize="11sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnTimeDay"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="0dp"
+                        android:text="Sáng"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/btnTimeAfternoon"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="0dp"
+                        android:text="Chiều"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/btnTimeNight"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="0dp"
+                        android:text="Đêm"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <!-- Driving Duration Slider -->
+                <TextView
+                    android:id="@+id/tvDrivingHours"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Thời gian lái: 0.0h (K=1.0x)"
+                    android:textColor="#B0BEC5"
+                    android:textSize="11sp" />
+
+                <SeekBar
+                    android:id="@+id/seekDrivingHours"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:max="12"
+                    android:progress="0" />
+
+                <!-- Hold Time (Giữ nhiệt) Slider for Tester -->
+                <TextView
+                    android:id="@+id/tvHoldTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Thời gian giữ nhiệt: 10s (chờ trước khi hạ)"
+                    android:textColor="#FFD54F"
+                    android:textSize="11sp" />
+
+                <SeekBar
+                    android:id="@+id/seekHoldTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:max="27"
+                    android:progress="7" />
+
+                <!-- Cooldown Decay Multiplier -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Tốc độ hạ nhiệt điểm rủi ro:"
+                    android:textColor="#B0BEC5"
+                    android:textSize="11sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnDecay1x"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="0dp"
+                        android:text="Chuẩn 1x"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/btnDecay3x"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="0dp"
+                        android:text="Nhanh 3x"
+                        android:textSize="10sp" />
+
+                    <Button
+                        android:id="@+id/btnDecay5x"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:padding="0dp"
+                        android:text="Siêu tốc 5x"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Ngưỡng đang thử nghiệm. Kính râm là chế độ chọn tay."
+                    android:textColor="#95A5A9"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</FrameLayout>

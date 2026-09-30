@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">DMS Driver Monitor</string>
+    <string name="start_monitoring">Bắt đầu giám sát</string>
+    <string name="stop_monitoring">Dừng giám sát</string>
+    <string name="recalibrate">Hiệu chuẩn lại</string>
+    <string name="mute">Tắt tiếng</string>
+    <string name="unmute">Bật tiếng</string>
+    <string name="sunglasses_on">Kính râm: bật</string>
+    <string name="sunglasses_off">Kính râm: tắt</string>
+    <string name="light_on">Viền sáng: bật</string>
+    <string name="light_off">Viền sáng: tắt</string>
+    <string name="eye_test">Kiểm tra mắt 11 giây</string>
+</resources>
+
